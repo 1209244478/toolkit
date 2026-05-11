@@ -32,7 +32,7 @@ export default function Home() {
   }, [activeFilter, searchQuery, t]);
 
   return (
-    <>
+    <div style={{display:'flex',flexDirection:'column',minHeight:'100vh'}}>
       <Header toolCount={TOOLS.length} />
       <Hero
         toolCount={TOOLS.length}
@@ -42,7 +42,8 @@ export default function Home() {
       />
       <FilterBar activeFilter={activeFilter} onFilterChange={setActiveFilter} />
       <ToolGrid tools={filteredTools} />
+      <div style={{flex:1}} />
       <Footer />
-    </>
+    </div>
   );
 }
