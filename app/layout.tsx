@@ -6,6 +6,9 @@ import { HomeStateProvider } from "@/app/lib/home-state";
 export const metadata: Metadata = {
   title: "TOOLKIT — Online Toolkit",
   description: "A collection of tools for developers and creators. All tools run locally in your browser. Safe, fast, and free.",
+  other: {
+    "google-adsense-account": "ca-pub-8033518221937083",
+  },
 };
 
 export default function RootLayout({
