@@ -8,11 +8,13 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <p className={styles.footerText}>{t.footer.text}</p>
-      <div className={styles.footerLinks}>
-        <a className={styles.footerLink} href="#">{t.footer.github}</a>
-        <a className={styles.footerLink} href="#">{t.footer.feedback}</a>
-        <a className={styles.footerLink} href="#">{t.footer.about}</a>
+      <div className={styles.footerInner}>
+        <p className={styles.footerText}>{t.footer.text}</p>
+        <div className={styles.footerLinks}>
+          <a className={styles.footerLink} href="#">{t.footer.github}</a>
+          <a className={styles.footerLink} href="#">{t.footer.feedback}</a>
+          <a className={styles.footerLink} href="#">{t.footer.about}</a>
+        </div>
       </div>
     </footer>
   );
