@@ -1,0 +1,27 @@
+.contentSection{
+  background:var(--pale-gray);
+  padding-top:0;
+}
+.toolsSection{
+  padding:24px 40px 80px;
+  max-width:1240px;margin:0 auto;
+}
+.toolGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+.emptyState{
+  grid-column:1/-1;text-align:center;
+  padding:80px 20px;
+}
+.emptyIcon{font-size:3rem;margin-bottom:16px;opacity:.4}
+.emptyText{color:var(--text-sec);font-size:.9375rem;letter-spacing:-0.01em}
+
+@media(max-width:768px){
+  .toolsSection{padding:16px 20px 60px}
+  .toolGrid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+}
+@media(max-width:480px){
+  .toolGrid{grid-template-columns:1fr}
+}

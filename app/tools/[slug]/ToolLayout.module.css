@@ -1,0 +1,42 @@
+.toolLayout{
+  min-height:100vh;
+  background:var(--pale-gray);
+}
+.toolHeader{
+  background:var(--white);
+  border-bottom:1px solid var(--border-soft);
+}
+.toolHeaderInner{
+  max-width:1240px;margin:0 auto;
+  padding:20px 40px;
+  display:flex;align-items:center;gap:16px;
+}
+.backLink{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--accent);text-decoration:none;
+  font-size:.8125rem;font-weight:500;
+  letter-spacing:-0.01em;
+  transition:color .2s;
+  flex-shrink:0;
+}
+.backLink:hover{color:var(--accent-pressed)}
+.toolHeaderIcon{font-size:1.5rem}
+.toolHeaderInfo{flex:1;min-width:0}
+.toolHeaderName{
+  font-family:'Inter','Noto Sans SC',-apple-system,sans-serif;
+  font-weight:600;font-size:1.25rem;
+  color:var(--ink);letter-spacing:-0.01em;
+}
+.toolHeaderDesc{
+  font-size:.8125rem;color:var(--text-sec);
+  letter-spacing:-0.01em;margin-top:2px;
+}
+.toolBody{
+  max-width:1240px;margin:0 auto;
+  padding:32px 40px 80px;
+}
+
+@media(max-width:768px){
+  .toolHeaderInner{padding:16px 20px}
+  .toolBody{padding:24px 20px 60px}
+}

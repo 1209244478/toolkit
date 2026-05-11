@@ -1,0 +1,72 @@
+import dynamic from 'next/dynamic';
+
+const loader = (name: string) => dynamic(() => import(`@/app/components/tools/${name}`), { ssr: false });
+
+export const TOOL_COMPONENTS: Record<string, React.ComponentType> = {
+  'json-formatter': loader('json-formatter'),
+  'base64': loader('base64'),
+  'url-encode': loader('url-encode'),
+  'text-diff': loader('text-diff'),
+  'regex-tester': loader('regex-tester'),
+  'markdown-editor': loader('markdown-editor'),
+  'word-count': loader('word-count'),
+  'text-dedup': loader('text-dedup'),
+  'case-converter': loader('case-converter'),
+  'html-escape': loader('html-escape'),
+  'text-to-speech': loader('text-to-speech'),
+  'lorem-ipsum': loader('lorem-ipsum'),
+
+  'image-compress': loader('image-compress'),
+  'image-convert': loader('image-convert'),
+  'image-crop': loader('image-crop'),
+  'image-to-base64': loader('image-to-base64'),
+  'qr-generator': loader('qr-generator'),
+  'color-picker': loader('color-picker'),
+  'placeholder-image': loader('placeholder-image'),
+  'pixelate-image': loader('pixelate-image'),
+
+  'jwt-parser': loader('jwt-parser'),
+  'uuid-generator': loader('uuid-generator'),
+  'hash-calculator': loader('hash-calculator'),
+  'cron-generator': loader('cron-generator'),
+  'code-formatter': loader('code-formatter'),
+  'code-screenshot': loader('code-screenshot'),
+  'json-viewer': loader('json-viewer'),
+  'ua-parser': loader('ua-parser'),
+
+  'pdf-convert': loader('pdf-convert'),
+  'csv-json': loader('csv-json'),
+  'yaml-json': loader('yaml-json'),
+  'xml-json': loader('xml-json'),
+  'timestamp': loader('timestamp'),
+  'base-converter': loader('base-converter'),
+  'unit-converter': loader('unit-converter'),
+  'md-to-html': loader('md-to-html'),
+
+  'color-converter': loader('color-converter'),
+  'gradient-generator': loader('css-gradient'),
+  'shadow-generator': loader('box-shadow-gen'),
+  'font-preview': loader('font-preview'),
+  'palette-generator': loader('palette-generator'),
+  'css-animation': loader('animation-gen'),
+  'border-radius': loader('border-radius-gen'),
+  'flexbox': loader('flexbox-gen'),
+  'grid': loader('grid-gen'),
+
+  'password-strength': loader('password-strength'),
+  'password-generator': loader('password-generator'),
+  'browser-info': loader('browser-info'),
+  'ip-lookup': loader('ip-lookup'),
+  'storage-viewer': loader('storage-viewer'),
+  'http-headers': loader('http-headers'),
+
+  'calculator': loader('calculator'),
+  'percentage-calc': loader('percentage-calc'),
+  'date-calc': loader('date-calc'),
+  'age-calc': loader('age-calc'),
+  'mortgage-calc': loader('mortgage-calc'),
+
+  'lottery': loader('lottery'),
+  'pomodoro': loader('pomodoro'),
+  'drawing-board': loader('drawing-board'),
+};

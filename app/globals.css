@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#000000;
+  --pale-gray:#f5f5f7;
+  --ink:#1d1d1f;
+  --white:#ffffff;
+  --accent:#0071e3;
+  --accent-hover:#0077ed;
+  --accent-pressed:#0066cc;
+  --link-bright:#2997ff;
+  --surface-a:#272729;
+  --surface-b:#262629;
+  --surface-c:#28282b;
+  --surface-d:#2a2a2c;
+  --text-sec:#6e6e73;
+  --border-soft:#d2d2d7;
+  --border-mid:#86868b;
+  --utility-dark:#424245;
+  --radius-xs:5px;
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:18px;
+  --radius-xl:28px;
+  --radius-pill:980px;
+  --cat-text:#e8a530;
+  --cat-image:#ff6b6b;
+  --cat-dev:#4ade80;
+  --cat-data:#60a5fa;
+  --cat-design:#c084fc;
+  --cat-net:#22d3ee;
+  --cat-calc:#f472b6;
+  --cat-fun:#a3e635;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter','Noto Sans SC',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  background:var(--black);
+  color:var(--ink);
+  line-height:1.47;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
+}

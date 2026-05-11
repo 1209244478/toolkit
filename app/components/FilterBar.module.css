@@ -1,0 +1,25 @@
+.filterBar{
+  padding:40px 40px 24px;
+  max-width:1240px;margin:0 auto;
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.filterBtn{
+  padding:8px 18px;border-radius:var(--radius-pill);
+  background:var(--white);border:1px solid var(--border-soft);
+  color:var(--ink);font-family:inherit;
+  font-size:.8125rem;font-weight:500;letter-spacing:-0.01em;
+  cursor:pointer;transition:all .25s ease;
+  white-space:nowrap;
+}
+.filterBtn:hover{
+  border-color:var(--border-mid);
+  color:var(--ink);
+}
+.filterBtnActive{
+  background:var(--ink);border-color:var(--ink);
+  color:var(--white);font-weight:600;
+}
+
+@media(max-width:768px){
+  .filterBar{padding:24px 20px 16px;gap:6px}
+}

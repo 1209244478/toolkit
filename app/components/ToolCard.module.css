@@ -1,0 +1,67 @@
+.toolCard{
+  position:relative;
+  background:var(--white);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  padding:28px 24px;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(.25,.1,.25,1);
+  overflow:hidden;
+}
+.toolCard:hover{
+  border-color:var(--border-mid);
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+}
+.toolIcon{
+  width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-md);font-size:1.35rem;
+  margin-bottom:16px;
+  transition:transform .3s;
+}
+.toolCard:hover .toolIcon{transform:scale(1.05)}
+.toolName{
+  font-family:'Inter','Noto Sans SC',-apple-system,sans-serif;
+  font-weight:600;font-size:1rem;
+  margin-bottom:6px;color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.toolDesc{
+  font-size:.8125rem;color:var(--text-sec);
+  line-height:1.47;letter-spacing:-0.01em;
+}
+.toolMeta{
+  display:flex;align-items:center;gap:8px;
+  margin-top:16px;
+}
+.toolTag{
+  font-size:.6875rem;font-weight:500;letter-spacing:-0.01em;
+  padding:3px 10px;border-radius:var(--radius-pill);
+  border:1px solid;
+}
+.toolBadge{
+  font-size:.625rem;font-weight:600;
+  padding:2px 8px;border-radius:var(--radius-pill);
+  letter-spacing:0.02em;
+}
+.badgeNew{background:#e8f8ef;color:#1a7f37}
+.badgeHot{background:#ffe5e5;color:#c41e3a}
+.badgePop{background:#e5efff;color:#0066cc}
+
+.catText .toolIcon{background:rgba(232,165,48,0.1)}
+.catText .toolTag{border-color:var(--cat-text);color:var(--cat-text)}
+.catImage .toolIcon{background:rgba(255,107,107,0.1)}
+.catImage .toolTag{border-color:var(--cat-image);color:var(--cat-image)}
+.catDev .toolIcon{background:rgba(74,222,128,0.1)}
+.catDev .toolTag{border-color:var(--cat-dev);color:var(--cat-dev)}
+.catData .toolIcon{background:rgba(96,165,250,0.1)}
+.catData .toolTag{border-color:var(--cat-data);color:var(--cat-data)}
+.catDesign .toolIcon{background:rgba(192,132,252,0.1)}
+.catDesign .toolTag{border-color:var(--cat-design);color:var(--cat-design)}
+.catNet .toolIcon{background:rgba(34,211,238,0.1)}
+.catNet .toolTag{border-color:var(--cat-net);color:var(--cat-net)}
+.catCalc .toolIcon{background:rgba(244,114,182,0.1)}
+.catCalc .toolTag{border-color:var(--cat-calc);color:var(--cat-calc)}
+.catFun .toolIcon{background:rgba(163,230,53,0.1)}
+.catFun .toolTag{border-color:var(--cat-fun);color:var(--cat-fun)}
