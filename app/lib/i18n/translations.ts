@@ -16,6 +16,7 @@ export interface Translations {
     badge: string;
     title1: string;
     title2: string;
+    safeTag: string;
     subtitle: string;
     searchPlaceholder: string;
     resultCount: string;
@@ -88,6 +89,7 @@ const zh: Translations = {
     badge: '纯前端运行 · 无需后端 · 隐私安全',
     title1: '你的在线',
     title2: '工具箱',
+    safeTag: '所有数据均在浏览器本地处理，不上传、不存储、不追踪',
     subtitle: '为开发者和创作者打造的工具集合。所有工具均在浏览器本地运行，数据不会上传至服务器，安全、快速、免费。',
     searchPlaceholder: '搜索工具，例如：JSON、密码、图片压缩...',
     resultCount: '{count} 个结果',
@@ -216,6 +218,7 @@ const en: Translations = {
     badge: 'Client-side Only · No Backend · Privacy Safe',
     title1: 'Your Online',
     title2: 'Toolkit',
+    safeTag: 'All data processed locally in your browser — no upload, no storage, no tracking',
     subtitle: 'A collection of tools for developers and creators. All tools run locally in your browser — no data is uploaded to any server. Safe, fast, and free.',
     searchPlaceholder: 'Search tools, e.g. JSON, password, image compress...',
     resultCount: '{count} results',

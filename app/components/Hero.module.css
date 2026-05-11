@@ -42,6 +42,12 @@
   -webkit-text-fill-color:transparent;
   background-clip:text;
 }
+.heroSafe{
+  font-size:.875rem;color:var(--link-bright);
+  margin-bottom:12px;
+  letter-spacing:-0.01em;
+  opacity:0;animation:fadeUp .8s cubic-bezier(.25,.1,.25,1) forwards .23s;
+}
 .heroSub{
   font-size:.9375rem;color:rgba(255,255,255,0.56);
   max-width:520px;line-height:1.47;

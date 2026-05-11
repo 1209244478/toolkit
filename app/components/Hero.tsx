@@ -23,6 +23,9 @@ export default function Hero({ toolCount, searchQuery, resultCount, onSearchChan
         <h1 className={styles.heroTitle}>
           {t.hero.title1}<br /><em className={styles.heroTitleEm}>{t.hero.title2}</em>
         </h1>
+        <p className={styles.heroSafe}>
+          {t.hero.safeTag}
+        </p>
         <p className={styles.heroSub}>
           {t.hero.subtitle}
         </p>
