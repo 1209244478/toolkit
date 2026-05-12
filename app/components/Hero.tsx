@@ -1,6 +1,7 @@
 'use client';
 
 import { useI18n } from '@/app/lib/i18n';
+import { TOOLS, Tool } from '@/app/lib/tools';
 import styles from './Hero.module.css';
 
 interface HeroProps {
@@ -10,8 +11,10 @@ interface HeroProps {
   onSearchChange: (query: string) => void;
 }
 
+const HOT_TOOLS = TOOLS.filter((t: Tool) => t.badge === 'hot');
+
 export default function Hero({ toolCount, searchQuery, resultCount, onSearchChange }: HeroProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   return (
     <section className={styles.hero}>
@@ -43,6 +46,30 @@ export default function Hero({ toolCount, searchQuery, resultCount, onSearchChan
             <span className={styles.searchCount}>{t.hero.resultCount.replace('{count}', String(resultCount))}</span>
           )}
         </div>
+        {HOT_TOOLS.length > 0 && (
+          <div className={styles.hotTools}>
+            <div className={styles.hotToolsLabel}>{t.hero.hotTools}</div>
+            <div className={styles.hotToolsList}>
+              {HOT_TOOLS.map((tool: Tool) => {
+                const toolT = t.tools[tool.slug];
+                const name = toolT?.name || tool.name;
+                const href = tool.externalUrl || `/tools/${tool.slug}`;
+                const isExternal = !!tool.externalUrl;
+                return isExternal ? (
+                  <a key={tool.slug} href={href} target="_blank" rel="noopener noreferrer" className={styles.hotToolTag}>
+                    <span className={styles.hotToolIcon}>{tool.icon}</span>
+                    <span>{name}</span>
+                  </a>
+                ) : (
+                  <a key={tool.slug} href={href} className={styles.hotToolTag}>
+                    <span className={styles.hotToolIcon}>{tool.icon}</span>
+                    <span>{name}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <div className={styles.stats}>
           <div><span className={styles.statNum}>{toolCount}</span><span className={styles.statLabel}>{t.hero.statTools}</span></div>
           <div><span className={styles.statNum}>8</span><span className={styles.statLabel}>{t.hero.statCategories}</span></div>

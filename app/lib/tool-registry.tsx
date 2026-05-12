@@ -67,6 +67,7 @@ export const TOOL_COMPONENTS: Record<string, React.ComponentType> = {
   'mortgage-calc': loader('mortgage-calc'),
 
   'avatar-generator': loader('avatar-generator'),
+  'tool-collection': loader('tool-collection'),
   'lottery': loader('lottery'),
   'pomodoro': loader('pomodoro'),
   'drawing-board': loader('drawing-board'),

@@ -23,6 +23,7 @@ export interface Translations {
     statTools: string;
     statCategories: string;
     statUpload: string;
+    hotTools: string;
   };
   filter: {
     all: string;
@@ -96,6 +97,7 @@ const zh: Translations = {
     statTools: '在线工具',
     statCategories: '工具分类',
     statUpload: '数据上传',
+    hotTools: '热门工具',
   },
   filter: {
     all: '全部',
@@ -203,6 +205,7 @@ const zh: Translations = {
     'lottery': { name: '抽奖器', desc: '导入名单后随机抽取，支持设置中奖人数', nameList: '名单（每行一个）', winnerCount: '中奖人数', startDraw: '开始抽奖', drawing: '抽奖中...', congratulations: '恭喜以下人员中奖！' },
     'pomodoro': { name: '番茄钟', desc: '专注计时工具，25 分钟工作 + 5 分钟休息循环', workDuration: '工作时长', breakDuration: '休息时长', minute: '分钟', ready: '准备开始', working: '专注工作中', breakTime: '休息时间', completed: '已完成', tomatoes: '个番茄', start: '开始', pause: '暂停', reset: '重置' },
     'avatar-generator': { name: '头像生成器', desc: '在线生成自定义风格头像，支持多种样式', redirecting: '正在跳转到头像生成工具...' },
+    'tool-collection': { name: '工具大全', desc: '收录1000+在线工具，包含图片处理、PDF转换、文字识别等', redirecting: '正在跳转到工具大全...' },
     'drawing-board': { name: '在线画板', desc: '简易绘画白板，支持画笔、形状和颜色选择', pen: '画笔', eraser: '橡皮', thickness: '粗细', undo: '撤销', clear: '清空', download: '下载' },
     'border-radius': { name: '圆角生成器', desc: '可视化调整元素 Border Radius，实时预览并生成 CSS 代码' },
     'flexbox': { name: 'Flexbox 生成器', desc: '可视化配置 Flexbox 布局属性，实时预览布局效果' },
@@ -226,6 +229,7 @@ const en: Translations = {
     statTools: 'Online Tools',
     statCategories: 'Categories',
     statUpload: 'Data Upload',
+    hotTools: 'Hot Tools',
   },
   filter: {
     all: 'All',
@@ -333,6 +337,7 @@ const en: Translations = {
     'lottery': { name: 'Lottery', desc: 'Random draw from a name list with customizable winner count', nameList: 'Name List (one per line)', winnerCount: 'Winner Count', startDraw: 'Start Draw', drawing: 'Drawing...', congratulations: 'Congratulations to the winners!' },
     'pomodoro': { name: 'Pomodoro Timer', desc: 'Focus timer with 25-minute work + 5-minute break cycles', workDuration: 'Work Duration', breakDuration: 'Break Duration', minute: 'min', ready: 'Ready', working: 'Focus Mode', breakTime: 'Break Time', completed: 'Completed', tomatoes: 'pomodoros', start: 'Start', pause: 'Pause', reset: 'Reset' },
     'avatar-generator': { name: 'Avatar Generator', desc: 'Generate custom style avatars online with various styles', redirecting: 'Redirecting to avatar generator...' },
+    'tool-collection': { name: 'Tool Collection', desc: '1000+ online tools including image processing, PDF conversion, OCR, and more', redirecting: 'Redirecting to tool collection...' },
     'drawing-board': { name: 'Drawing Board', desc: 'Simple drawing canvas with pen, shapes, and color selection', pen: 'Pen', eraser: 'Eraser', thickness: 'Thickness', undo: 'Undo', clear: 'Clear', download: 'Download' },
     'border-radius': { name: 'Border Radius Gen', desc: 'Visually adjust element border radius, preview and generate CSS' },
     'flexbox': { name: 'Flexbox Generator', desc: 'Visually configure Flexbox layout properties with live preview' },
