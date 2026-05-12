@@ -57,9 +57,33 @@ export default function ToolCard({ tool, index }: { tool: Tool; index: number })
   const catLabel = t.filter[tool.cat as keyof typeof t.filter];
   const badgeLabel = tool.badge ? BADGE_LABEL[tool.badge]?.[locale] : undefined;
 
-  return (
+  const href = tool.externalUrl || `/tools/${tool.slug}`;
+  const isExternal = !!tool.externalUrl;
+
+  return isExternal ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      ref={cardRef as React.Ref<HTMLAnchorElement>}
+      className={`${styles.toolCard} ${CAT_CLASS[tool.cat] || ''}`}
+      style={{ opacity: 0, transform: 'translateY(12px)', transition: 'all .3s cubic-bezier(.25,.1,.25,1)', textDecoration:'none' }}
+    >
+      <div className={styles.toolIcon}>{tool.icon}</div>
+      <div className={styles.toolName}>{name}</div>
+      <div className={styles.toolDesc}>{desc}</div>
+      <div className={styles.toolMeta}>
+        <span className={styles.toolTag}>{catLabel}</span>
+        {tool.badge && badgeLabel && (
+          <span className={`${styles.toolBadge} ${BADGE_CLASS[tool.badge]}`}>
+            {badgeLabel}
+          </span>
+        )}
+      </div>
+    </a>
+  ) : (
     <Link
-      href={`/tools/${tool.slug}`}
+      href={href}
       ref={cardRef}
       className={`${styles.toolCard} ${CAT_CLASS[tool.cat] || ''}`}
       style={{ opacity: 0, transform: 'translateY(12px)', transition: 'all .3s cubic-bezier(.25,.1,.25,1)', textDecoration:'none' }}
