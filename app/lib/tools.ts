@@ -80,6 +80,7 @@ export const TOOLS: Tool[] = [
   { icon: '🎂', name: '年龄计算器', desc: '根据出生日期计算精确年龄、星座和生肖', cat: 'calc', slug: 'age-calc' },
   { icon: '🏠', name: '房贷计算器', desc: '等额本息/等额本金还款方式，计算月供和总利息', cat: 'calc', slug: 'mortgage-calc' },
 
+  { icon: '👤', name: '头像生成器', desc: '在线生成自定义风格头像，支持多种样式', cat: 'image', badge: 'new', slug: 'avatar-generator' },
   { icon: '🎰', name: '抽奖器', desc: '导入名单后随机抽取，支持设置中奖人数', cat: 'fun', slug: 'lottery' },
   { icon: '🍅', name: '番茄钟', desc: '专注计时工具，25 分钟工作 + 5 分钟休息循环', cat: 'fun', slug: 'pomodoro' },
   { icon: '🖌️', name: '在线画板', desc: '简易绘画白板，支持画笔、形状和颜色选择', cat: 'fun', badge: 'new', slug: 'drawing-board' },
