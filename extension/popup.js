@@ -22,8 +22,7 @@ const btnPause = document.getElementById('btnPause');
 const btnReset = document.getElementById('btnReset');
 
 // ───── DOM: Pet ─────
-const petCanvas = document.getElementById('petCanvas');
-const petCtx = petCanvas.getContext('2d');
+const petImage = document.getElementById('petImage');
 const hungerBar = document.getElementById('hungerBar');
 const happyBar = document.getElementById('happyBar');
 const hungerText = document.getElementById('hungerText');
@@ -32,7 +31,6 @@ const foodCount = document.getElementById('foodCount');
 const btnFeed = document.getElementById('btnFeed');
 const btnPetPet = document.getElementById('btnPetPet');
 const petNameEl = document.getElementById('petName');
-const petSelector = document.getElementById('petSelector');
 
 // ════════════════════════════════════════
 //  TAB SWITCHING
@@ -230,11 +228,11 @@ btnReset.addEventListener('click', resetTimer);
 const AVAILABLE_PETS = ['cat', 'dog', 'rabbit', 'bear', 'fox'];
 
 const PET_TYPES = {
-  cat:    { name: '猫咪', emoji: '🐱', foodName: '鱼罐头', foodEmoji: '🐟', foodIcon: '🐟' },
-  dog:    { name: '狗狗', emoji: '🐶', foodName: '骨头', foodEmoji: '🦴', foodIcon: '🦴' },
-  rabbit: { name: '兔子', emoji: '🐰', foodName: '胡萝卜', foodEmoji: '🥕', foodIcon: '🥕' },
-  bear:   { name: '小熊', emoji: '🐻', foodName: '蜂蜜罐', foodEmoji: '🍯', foodIcon: '🍯' },
-  fox:    { name: '狐狸', emoji: '🦊', foodName: '烤肉', foodEmoji: '🥩', foodIcon: '🥩' },
+  cat:    { name: '猫咪', emoji: '🐱', code: '1f431', foodName: '鱼罐头', foodEmoji: '🐟', foodIcon: '🐟' },
+  dog:    { name: '狗狗', emoji: '🐶', code: '1f436', foodName: '骨头', foodEmoji: '🦴', foodIcon: '🦴' },
+  rabbit: { name: '兔子', emoji: '🐰', code: '1f430', foodName: '胡萝卜', foodEmoji: '🥕', foodIcon: '🥕' },
+  bear:   { name: '小熊', emoji: '🐻', code: '1f43b', foodName: '蜂蜜罐', foodEmoji: '🍯', foodIcon: '🍯' },
+  fox:    { name: '狐狸', emoji: '🦊', code: '1f98a', foodName: '烤肉', foodEmoji: '🥩', foodIcon: '🥩' },
 };
 
 // Pet name pools
@@ -246,127 +244,10 @@ const PET_NAMES = {
   fox: ['小灵', '火火', '苏苏', '尾尾', '橙子'],
 };
 
-// Dead frame — X eyes, gray body
-const PET_DEAD_FRAME = [
-  '................',
-  '................',
-  '......@@@@......',
-  '.....######.....',
-  '....##+##+##....',
-  '...##++++++##...',
-  '...##+XXXX+##...',
-  '...##########...',
-  '....########....',
-  '.....@+++@......',
-  '......@@@.......',
-  '.....@+@+@......',
-  '....@+++++@.....',
-  '...@+++++++@....',
-  '................',
-  '................',
-];
-
-// Multi-color legend:
-//   @ = dark body/outline
-//   # = main fur color
-//   * = pink/skin (inner ear, nose)
-//   + = white/light area (face, belly)
-//   ~ = accent/eye color
-//   $ = tongue
-//   % = secondary fur (patches, tail tip)
-//   . = transparent
-
-const PET_SPRITES = {
-  // ───── Cat: orange tabby with pointed ears, whiskers ─────
-  cat: {
-    frames: [
-      // idle
-      ['................','................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','....##++##......','.....@++@.......','.....@##@.......','.....##+##......','.....@..@.......','................'],
-      // walk1
-      ['................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','....##++##......','.....@++@.......','....@####@......','....@++++@......','.....@..@.......','................','................'],
-      // walk2
-      ['................','................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','....##++##......','.....@++@.......','.....@##@.......','....##+##......','...@++++@......','...@....@......'],
-      // happy
-      ['................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','....##++##......','.....@++@.......','.....@##@.......','....##+##......','.....@..@.......','....@.@@.@......','....@....@......'],
-      // sad
-      ['................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','.....##++##......','......@++@.......','......@##@.......','.....@++++@......','....##+++##......','...@.......@.....','................'],
-      // eat
-      ['................','......##........','.....####.......','....*####*......','...**####**.....','...*######*.....','...########.....','...###++###.....','....##++##......','....##++##......','.....@++@.......','.....@##@.......','....##++##......','..@.@@@@.@......','................','................'],
-    ],
-  },
-  // ───── Dog: brown with floppy ears, tongue out ─────
-  dog: {
-    frames: [
-      // idle
-      ['................','................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','.....#++#.......','.....@++@.......','.....@##@.......','....##++##......','....@+@@+@......','....@....@......'],
-      // walk1
-      ['................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','.....#++#.......','......@++@.......','.....@####@......','.....@++++@......','......@..@.......','................','................'],
-      // walk2
-      ['................','................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','.....#++#.......','......@++@.......','......@##@.......','.....@++++@......','....##+..+##.....','...@........@....'],
-      // happy
-      ['................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','.....#++#.......','......@++@.......','......@##@.......','.....@++++@......','......@..@.......','.....@.@@.@......','.....@....@......'],
-      // sad
-      ['................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','......#++#........','.......@++@........','.......@##@........','......@++++@.......','.....@+++++@.......','....@.......@......','................'],
-      // eat
-      ['................','......##........','....######......','...########.....','..##++++++##....','..##++++++##....','..##########....','...##+++###.....','....#+++##......','.....#++#.......','......@++@.......','......@##@.......','.....@++++@......','...@.@@@@.@......','................','................'],
-    ],
-  },
-  // ───── Rabbit: white with long ears ─────
-  rabbit: {
-    frames: [
-      // idle
-      ['.....@+++@......','....@+++++@.....','...@+++++++@....','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','...@+++++++@....','....@#####@.....','.....##@##......','.....#**#.......','.....@##@.......','.....@++@.......','.....@++@.......','.....@..@.......','......@@........'],
-      // walk1
-      ['.....@+++@......','....@+++++@.....','...@+++++++@....','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','...@+++++++@....','....@#####@.....','.....##@##......','.....#**#.......','.....@##@.......','.....@++@.......','......@++@.......','......@@@........','................'],
-      // walk2
-      ['......@+++@.......','.....@+++++@......','....@+++++++@.....','...@+++++++++@....','...@+++++++++@....','...@+++++++++@....','...@+++++++++@....','....@+++++++@.....','.....@#####@......','......##@##.......','......#**#........','......@##@........','......@++@........','.....@++@.........','....@.@@.@........','....@....@........'],
-      // happy
-      ['.....@+++@......','....@+++++@.....','...@+++++++@....','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','...@+++++++@....','....@#####@.....','.....##@##......','.....#**#.......','.....@##@.......','.....@++@.......','......@++@.......','.....@.@@.@......','.....@....@......'],
-      // sad
-      ['.....@+++@......','....@+++++@.....','...@+++++++@....','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','...@+++++++@....','....@#####@.....','.....##@##......','......#**#........','.......@##@........','......@++++@.......','......@+++++@......','.....@.......@.....','................'],
-      // eat
-      ['.....@+++@......','....@+++++@.....','...@+++++++@....','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','..@+++++++++@...','...@+++++++@....','....@#####@.....','.....##@##......','.....#**#.......','.....@##@.......','.....@++@.......','....@.@@@@.@....','................','................'],
-    ],
-  },
-  // ───── Bear: brown round face, small ears ─────
-  bear: {
-    frames: [
-      // idle
-      ['................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','.....##++##.....','.....##++##.....','......@++@......','......@##@......','......@@@@......','.....@++++@.....','.....@....@.....'],
-      // walk1
-      ['................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','.....##++##.....','.....##++##.....','.......@++@.......','......@####@......','......@++++@......','.......@..@.......','................'],
-      // walk2
-      ['................','................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','.....##++##.....','.....##++##.....','.......@++@.......','.......@##@.......','......@++++@......','......@....@......'],
-      // happy
-      ['................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','.....##++##.....','.....##++##.....','.......@++@.......','.......@##@.......','.......@@@@.......','......@.@@.@......','......@....@......'],
-      // sad
-      ['................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','......##++##......','.......##++##......','........@++@........','........@##@........','.......@++++@.......','......@+++++@.......','.....@.......@......'],
-      // eat
-      ['................','......####......','....########....','...##*++*##.....','..##++++++##....','..##++++++##....','..##*####*##....','...########.....','....###++##.....','.....##++##.....','.....##++##.....','.......@++@.......','.......@##@.......','......@@@@@@......','.....@......@.....','................'],
-    ],
-  },
-  // ───── Fox: orange with white face, pointed snout, big tail ─────
-  fox: {
-    frames: [
-      // idle
-      ['................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','......#+++##....','......#+++##....','.......@++@.....','.......@##@.....','.......@%%@.....','......@%%%%@....','......@%%%%@....'],
-      // walk1
-      ['................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','......#+++##....','......#+++##....','........@++@......','.......@####@.....','.......@++++@.....','........@..@......','................'],
-      // walk2
-      ['................','................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','......#+++##....','......#+++##....','........@++@......','........@##@......','.......@%%%%%%%%@.','......@%%%%%%%%@..'],
-      // happy
-      ['................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','......#+++##....','......#+++##....','.......@++@......','.......@##@......','.......@%%@......','......@.%%@......','......@....@.....'],
-      // sad
-      ['................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','.......#+++##.....','........#+++##.....','.........@++@.......','.........@##@.......','........@%%%%@......','.......@%%%%%%@.....','......@........@....'],
-      // eat
-      ['................','........##......','.......####.....','......######....','.....##*++*##...','....##++++++##..','....##++++++##..','....##########..','.....##+++###...','......#+++##....','......#+++##....','.......@++@......','.......@##@......','......@%%%%@.....','.....@.@@@@.@....','................'],
-    ],
-  },
-};
-
-const PET_SPRITE_SIZE = 16;
-const PET_PIXEL = 13;
-const PET_ANIM_FRAME_MS = 450;
+// Twemoji SVG URL helper
+function getPetSvgUrl(code) {
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${code}.svg`;
+}
 
 // Pet state
 let petData = {
@@ -381,12 +262,6 @@ let petData = {
   lastTickTime: Date.now(),
 };
 
-let petAnimFrame = 0;
-let petAnimTimer = 0;
-let petLastTime = performance.now();
-let petSpecialAnim = null;
-let petSpecialTimer = 0;
-
 // ───── DOM refs for pet panel ─────
 const petAdopt = document.getElementById('petAdopt');
 const petDead = document.getElementById('petDead');
@@ -399,10 +274,6 @@ const foodIcon = document.getElementById('foodIcon');
 const foodLabel = document.getElementById('foodLabel');
 
 // ───── Pet helpers ─────
-function getPetFrames(type) {
-  return PET_SPRITES[type] ? PET_SPRITES[type].frames : PET_SPRITES.cat.frames;
-}
-
 function getPetInfo(type) {
   return PET_TYPES[type] || PET_TYPES.cat;
 }
@@ -425,7 +296,7 @@ function loadPetData() {
     }
     showCorrectPetScreen();
     updatePetUI();
-    renderPet();
+    updatePetImage();
   });
 }
 
@@ -449,11 +320,13 @@ function showCorrectPetScreen() {
     }
   } else {
     petAlive.style.display = '';
-    petTypeBadge.textContent = getPetInfo(petData.petType).emoji;
+    const info = getPetInfo(petData.petType);
+    petTypeBadge.textContent = info.emoji;
     petNameEl.textContent = petData.petName;
     hungerIcon.textContent = getFoodEmoji();
     foodIcon.textContent = getFoodEmoji();
     foodLabel.textContent = getFoodName();
+    updatePetImage();
   }
 }
 
@@ -477,7 +350,7 @@ function petTick() {
       savePetData();
       showCorrectPetScreen();
       updatePetUI();
-      renderPet();
+      updatePetImage();
       return;
     }
     savePetData();
@@ -500,7 +373,15 @@ function feedPet() {
   petData.happiness = Math.min(100, petData.happiness + 10);
   savePetData();
 
-  triggerSpecialAnim('eat');
+  // Show eating animation
+  if (petImage) {
+    petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake');
+    petImage.classList.add('eating');
+    setTimeout(() => {
+      petImage.classList.remove('eating');
+      updatePetAnimClass();
+    }, 900);
+  }
   const stage = document.getElementById('petStage');
   spawnEffect('food', stage, stage.offsetWidth / 2, stage.offsetHeight / 2);
   updatePetUI();
@@ -511,7 +392,15 @@ function petPet() {
   petData.happiness = Math.min(100, petData.happiness + 5);
   savePetData();
 
-  triggerSpecialAnim('happy');
+  // Happy bounce effect
+  if (petImage) {
+    petImage.classList.remove('bounce', 'sad-shake', 'eating');
+    petImage.classList.add('happy-bounce');
+    setTimeout(() => {
+      petImage.classList.remove('happy-bounce');
+      updatePetAnimClass();
+    }, 1200);
+  }
   const stage = document.getElementById('petStage');
   spawnEffect('heart', stage, Math.random() * stage.offsetWidth * 0.6 + stage.offsetWidth * 0.2, stage.offsetHeight * 0.5);
   updatePetUI();
@@ -538,15 +427,10 @@ function adoptPet() {
 
   showCorrectPetScreen();
   updatePetUI();
-  renderPet();
+  updatePetImage();
 }
 
 btnAdopt.addEventListener('click', adoptPet);
-
-function triggerSpecialAnim(type) {
-  petSpecialAnim = type;
-  petSpecialTimer = 1200;
-}
 
 function spawnEffect(type, parent, x, y) {
   if (!parent) return;
@@ -588,128 +472,62 @@ function updatePetUI() {
   // Food
   foodCount.textContent = petData.food;
   btnFeed.disabled = petData.food <= 0 || petData.hunger >= 100;
+
+  // Update image animation
+  updatePetImage();
 }
 
-// ───── Pet Canvas Render ─────
-function renderPetAnimFrame() {
-  // Dead pet
-  if (petData.adopted && !petData.alive) {
-    return PET_DEAD_FRAME;
+// ───── Pet image rendering (Twemoji SVG) ─────
+function updatePetImage() {
+  if (!petImage) return;
+
+  // Remove all animation classes
+  petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake', 'eating', 'dead-pet');
+
+  if (!petData.adopted) {
+    petImage.src = '';
+    return;
   }
 
-  if (!petData.petType || !petData.alive) return null;
-
-  const frames = getPetFrames(petData.petType);
-  if (petSpecialAnim) {
-    const idx = petSpecialAnim === 'happy' ? 3 : petSpecialAnim === 'sad' ? 4 : 5;
-    return frames[Math.min(idx, frames.length - 1)] || frames[0];
-  }
-  return frames[petAnimFrame % 3] || frames[0];
-}
-
-// ───── Color map for sprite chars ─────
-function getColorMap(type) {
-  const palettes = {
-    cat:    { '@':'#3a2a1a', '#':'#e8873a', '*':'#f4a8b0', '+':'#fff8ee', '~':'#5b8c5a', '$':'#e85d75', '%':'#3a2a1a' },
-    dog:    { '@':'#3a2a1a', '#':'#b5651d', '*':'#f4a8b0', '+':'#fff5e6', '~':'#5b8c5a', '$':'#e85d75', '%':'#3a2a1a' },
-    rabbit: { '@':'#4a4a4a', '#':'#f0e6d3', '*':'#f4a8b0', '+':'#ffffff', '~':'#e8873a', '$':'#e85d75', '%':'#4a4a4a' },
-    bear:   { '@':'#3a2a1a', '#':'#8b5e3c', '*':'#f4a8b0', '+':'#f5deb3', '~':'#3a2a1a', '$':'#e85d75', '%':'#3a2a1a' },
-    fox:    { '@':'#3a2a1a', '#':'#e8751a', '*':'#f4a8b0', '+':'#fffaf0', '~':'#5b8c5a', '$':'#e85d75', '%':'#faf0e6' },
-  };
-  return palettes[type] || palettes.cat;
-}
-
-function renderPet() {
-  if (petData.adopted && !petData.alive && petPanel.style.display === 'none') return;
-
-  const w = petCanvas.width;
-  const h = petCanvas.height;
-  petCtx.clearRect(0, 0, w, h);
-
-  const sprite = renderPetAnimFrame();
-  if (!sprite) return;
-
-  const spritePixel = PET_PIXEL;
-  const spriteW = PET_SPRITE_SIZE * spritePixel;
-  const spriteH = PET_SPRITE_SIZE * spritePixel;
-  const ox = Math.floor((w - spriteW) / 2);
-  const oy = Math.floor((h - spriteH) / 2);
-
-  let bounceY = 0;
-  if (petData.alive && petData.happiness >= 80) {
-    bounceY = Math.sin(performance.now() * 0.004) * 4;
+  if (!petData.alive) {
+    // Dead — use skull emoji SVG
+    petImage.src = getPetSvgUrl('1f480');
+    petImage.classList.add('dead-pet');
+    return;
   }
 
-  const isDead = petData.adopted && !petData.alive;
-  const deadColorMap = { '@':'#999', '#':'#bbb', '*':'#ccc', '+':'#ddd', '~':'#aaa', '$':'#aaa', '%':'#888', 'X':'#777' };
-  const colorMap = isDead ? deadColorMap : getColorMap(petData.petType);
+  // Alive — use pet's emoji
+  const info = getPetInfo(petData.petType);
+  petImage.src = getPetSvgUrl(info.code);
 
-  // Draw body pixels with colors
-  for (let row = 0; row < PET_SPRITE_SIZE; row++) {
-    for (let col = 0; col < PET_SPRITE_SIZE; col++) {
-      const ch = sprite[row] ? sprite[row][col] : '.';
-      if (ch === '.') continue;
-
-      const x = ox + col * spritePixel;
-      const y = oy + row * spritePixel + bounceY;
-      const color = colorMap[ch] || '#1a1a2e';
-
-      petCtx.fillStyle = color;
-      petCtx.fillRect(x, y, spritePixel, spritePixel);
-    }
+  // Animation based on mood
+  if (petData.hunger < 20) {
+    petImage.classList.add('sad-shake');
+  } else if (petData.happiness >= 80) {
+    petImage.classList.add('happy-bounce');
+  } else {
+    petImage.classList.add('bounce');
   }
 
-  // Eyes (only for alive pets, dead pets already have X in sprite)
-  if (!isDead) {
-    const eyeY = oy + 4 * spritePixel + bounceY;
-    const leftEyeX = ox + 5 * spritePixel;
-    const rightEyeX = ox + 9 * spritePixel;
-
-    // White of eye
-    petCtx.fillStyle = '#ffffff';
-    petCtx.fillRect(leftEyeX, eyeY, spritePixel - 1, spritePixel);
-    petCtx.fillRect(rightEyeX, eyeY, spritePixel - 1, spritePixel);
-
-    // Pupil
-    petCtx.fillStyle = colorMap['@'] || '#1a1a2e';
-    const pupilSize = spritePixel * 0.5;
-    const pupilOffset = spritePixel * 0.25;
-    if (petData.happiness < 20) {
-      petCtx.fillRect(leftEyeX + pupilOffset, eyeY + spritePixel - pupilSize - 1, pupilSize, pupilSize * 0.6);
-      petCtx.fillRect(rightEyeX + pupilOffset, eyeY + spritePixel - pupilSize - 1, pupilSize, pupilSize * 0.6);
-    } else {
-      petCtx.fillRect(leftEyeX + pupilOffset + 1, eyeY + 2, pupilSize, pupilSize);
-      petCtx.fillRect(rightEyeX + pupilOffset + 1, eyeY + 2, pupilSize, pupilSize);
-    }
-
-    // Tear if sad
-    if (petData.happiness < 20) {
-      petCtx.fillStyle = '#60a5fa';
-      petCtx.fillRect(leftEyeX + spritePixel - 2, eyeY + spritePixel - 1, 2, 4);
-    }
+  // Special animation
+  if (petSpecialAnim === 'eat') {
+    petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake');
+    petImage.classList.add('eating');
   }
 }
 
-function animatePet(now) {
-  const dt = (now - petLastTime) / 1000;
-  petLastTime = now;
+function updatePetAnimClass() {
+  if (!petData.alive || !petImage) return;
+  petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake', 'eating', 'dead-pet');
+  if (petData.hunger < 20) petImage.classList.add('sad-shake');
+  else if (petData.happiness >= 80) petImage.classList.add('happy-bounce');
+  else petImage.classList.add('bounce');
+}
 
-  petAnimTimer += dt * 1000;
-  if (petAnimTimer > PET_ANIM_FRAME_MS) {
-    petAnimTimer = 0;
-    petAnimFrame++;
-  }
-
-  if (petSpecialTimer > 0) {
-    petSpecialTimer -= dt * 1000;
-    if (petSpecialTimer <= 0) {
-      petSpecialAnim = null;
-      petSpecialTimer = 0;
-    }
-  }
-
+// Idle animation loop
+function animatePet() {
   if (petPanel.style.display !== 'none') {
-    renderPet();
+    // Image animations are CSS-driven, no per-frame update needed
   }
   requestAnimationFrame(animatePet);
 }

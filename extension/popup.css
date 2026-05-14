@@ -254,8 +254,55 @@ body {
   min-height: 240px;
 }
 
-#petCanvas {
+.pet-img {
   display: block;
+  width: 120px;
+  height: 120px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.pet-img.bounce {
+  animation: petBounce 0.6s ease-in-out infinite;
+}
+.pet-img.happy-bounce {
+  animation: petHappyBounce 0.4s ease-in-out infinite;
+}
+.pet-img.sad-shake {
+  animation: petSadShake 1.5s ease-in-out infinite;
+  filter: grayscale(0.4) brightness(0.8);
+}
+.pet-img.eating {
+  animation: petEatNod 0.3s ease-in-out 3;
+}
+.pet-img.dead-pet {
+  filter: grayscale(1) brightness(0.6);
+  transform: rotate(90deg);
+  opacity: 0.7;
+}
+
+@keyframes petBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.03); }
+}
+@keyframes petHappyBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-12px) scale(1.08); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-6px) scale(1.04); }
+}
+@keyframes petSadShake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-3px); }
+  20% { transform: translateX(3px); }
+  30% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(0); }
+}
+@keyframes petEatNod {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(3px) scale(0.95); }
 }
 
 /* Floating hearts */
