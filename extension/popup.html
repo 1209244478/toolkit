@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>番茄钟</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <label class="label">工作时长 (<span id="workMinVal">25</span> 分钟)</label>
+        <input type="range" id="workSlider" class="slider" min="1" max="60" value="25">
+      </div>
+      <div class="col">
+        <label class="label">休息时长 (<span id="breakMinVal">5</span> 分钟)</label>
+        <input type="range" id="breakSlider" class="slider" min="1" max="30" value="5">
+      </div>
+    </div>
+
+    <div class="timer-card">
+      <div class="state-label" id="stateLabel">准备开始</div>
+      <div class="time-display" id="timeDisplay">25:00</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      <div class="session-count">已完成 <span id="sessionCount">0</span> 个番茄</div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btnStart">开始</button>
+      <button class="btn btn-outline" id="btnPause" style="display:none">暂停</button>
+      <button class="btn btn-outline" id="btnReset">重置</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

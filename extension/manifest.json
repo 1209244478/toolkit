@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "番茄钟 Pomodoro Timer",
+  "version": "1.0.0",
+  "description": "简洁高效的番茄钟计时器，专注工作与休息的完美平衡",
+  "permissions": ["storage", "alarms", "notifications"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "番茄钟",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
