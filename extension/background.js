@@ -7,12 +7,25 @@ const STATE_PAUSED = 'paused';
 
 const ALARM_NAME = 'pomodoro-tick';
 
-// ───── Helper: broadcast to all tabs ─────
-function broadcastToTabs(msg) {
+// ───── Inject content script to all tabs ─────
+function injectBreakOverlay(secondsLeft) {
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach((tab) => {
-      if (tab.id && tab.url && tab.url.startsWith('http')) {
-        chrome.tabs.sendMessage(tab.id, msg).catch(() => {});
+      if (tab.id && tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js'],
+        }).catch(() => {});
+      }
+    });
+  });
+}
+
+function removeBreakOverlay() {
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id && tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+        chrome.tabs.sendMessage(tab.id, { type: 'breakEnd' }).catch(() => {});
       }
     });
   });
@@ -31,7 +44,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'sync') {
-    const prevState = { timerState: null };
+    const prevState = {};
 
     chrome.storage.local.get(['timerState'], (prev) => {
       prevState.timerState = prev.timerState;
@@ -45,12 +58,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sessions: msg.sessions,
       });
 
-      // Detect phase transition → broadcast to content scripts
+      // Detect phase transition → inject/remove overlay
       if (msg.timerState === STATE_BREAK && prevState.timerState !== STATE_BREAK) {
-        broadcastToTabs({ type: 'breakStart', secondsLeft: msg.secondsLeft });
+        injectBreakOverlay(msg.secondsLeft);
       }
       if (msg.timerState !== STATE_BREAK && prevState.timerState === STATE_BREAK) {
-        broadcastToTabs({ type: 'breakEnd' });
+        removeBreakOverlay();
       }
 
       if (msg.timerState === STATE_WORK || msg.timerState === STATE_BREAK) {
@@ -91,7 +104,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     chrome.action.setBadgeBackgroundColor({ color });
 
     if (secondsLeft <= 0) {
-      // Phase switch
       if (state === STATE_WORK) {
         state = STATE_BREAK;
         sessions++;
@@ -105,8 +117,8 @@ chrome.alarms.onAlarm.addListener((alarm) => {
           priority: 2,
         });
 
-        // Show cat overlay on all tabs
-        broadcastToTabs({ type: 'breakStart', secondsLeft });
+        // Inject cat overlay on all tabs
+        injectBreakOverlay(secondsLeft);
       } else {
         state = STATE_WORK;
         secondsLeft = (data.workMin || 25) * 60;
@@ -120,7 +132,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         });
 
         // Remove cat overlay from all tabs
-        broadcastToTabs({ type: 'breakEnd' });
+        removeBreakOverlay();
       }
 
       const newEndTime = now + secondsLeft * 1000;
@@ -130,11 +142,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
         endTime: newEndTime,
         sessions,
       });
-    }
-
-    // Tick the overlay timer during break
-    if (state === STATE_BREAK) {
-      broadcastToTabs({ type: 'breakTick', secondsLeft });
     }
 
     // Notify popup if open
