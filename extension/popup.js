@@ -22,7 +22,7 @@ const btnPause = document.getElementById('btnPause');
 const btnReset = document.getElementById('btnReset');
 
 // ───── DOM: Pet ─────
-const petImage = document.getElementById('petImage');
+const petBody = document.getElementById('petBody');
 const hungerBar = document.getElementById('hungerBar');
 const happyBar = document.getElementById('happyBar');
 const hungerText = document.getElementById('hungerText');
@@ -228,11 +228,11 @@ btnReset.addEventListener('click', resetTimer);
 const AVAILABLE_PETS = ['cat', 'dog', 'rabbit', 'bear', 'fox'];
 
 const PET_TYPES = {
-  cat:    { name: '猫咪', emoji: '🐱', code: '1f431', foodName: '鱼罐头', foodEmoji: '🐟', foodIcon: '🐟' },
-  dog:    { name: '狗狗', emoji: '🐶', code: '1f436', foodName: '骨头', foodEmoji: '🦴', foodIcon: '🦴' },
-  rabbit: { name: '兔子', emoji: '🐰', code: '1f430', foodName: '胡萝卜', foodEmoji: '🥕', foodIcon: '🥕' },
-  bear:   { name: '小熊', emoji: '🐻', code: '1f43b', foodName: '蜂蜜罐', foodEmoji: '🍯', foodIcon: '🍯' },
-  fox:    { name: '狐狸', emoji: '🦊', code: '1f98a', foodName: '烤肉', foodEmoji: '🥩', foodIcon: '🥩' },
+  cat:    { name: '猫咪', emoji: '🐱', cssClass: 'pet-cat', foodName: '鱼罐头', foodEmoji: '🐟', foodIcon: '🐟' },
+  dog:    { name: '狗狗', emoji: '🐶', cssClass: 'pet-dog', foodName: '骨头', foodEmoji: '🦴', foodIcon: '🦴' },
+  rabbit: { name: '兔子', emoji: '🐰', cssClass: 'pet-rabbit', foodName: '胡萝卜', foodEmoji: '🥕', foodIcon: '🥕' },
+  bear:   { name: '小熊', emoji: '🐻', cssClass: 'pet-bear', foodName: '蜂蜜罐', foodEmoji: '🍯', foodIcon: '🍯' },
+  fox:    { name: '狐狸', emoji: '🦊', cssClass: 'pet-fox', foodName: '烤肉', foodEmoji: '🥩', foodIcon: '🥩' },
 };
 
 // Pet name pools
@@ -243,11 +243,6 @@ const PET_NAMES = {
   bear: ['小憨', '胖达', '滚滚', '蜜蜜', '吨吨'],
   fox: ['小灵', '火火', '苏苏', '尾尾', '橙子'],
 };
-
-// Twemoji SVG URL helper
-function getPetSvgUrl(code) {
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${code}.svg`;
-}
 
 // Pet state
 let petData = {
@@ -296,7 +291,7 @@ function loadPetData() {
     }
     showCorrectPetScreen();
     updatePetUI();
-    updatePetImage();
+    updatePetAppearance();
   });
 }
 
@@ -326,7 +321,8 @@ function showCorrectPetScreen() {
     hungerIcon.textContent = getFoodEmoji();
     foodIcon.textContent = getFoodEmoji();
     foodLabel.textContent = getFoodName();
-    updatePetImage();
+    updatePetAppearance();
+    updatePetAnimClass();
   }
 }
 
@@ -350,7 +346,7 @@ function petTick() {
       savePetData();
       showCorrectPetScreen();
       updatePetUI();
-      updatePetImage();
+      updatePetAppearance();
       return;
     }
     savePetData();
@@ -374,13 +370,13 @@ function feedPet() {
   savePetData();
 
   // Show eating animation
-  if (petImage) {
-    petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake');
-    petImage.classList.add('eating');
+  if (petBody) {
+    petBody.classList.remove('happy', 'sad');
+    petBody.classList.add('eating');
     setTimeout(() => {
-      petImage.classList.remove('eating');
+      petBody.classList.remove('eating');
       updatePetAnimClass();
-    }, 900);
+    }, 1400);
   }
   const stage = document.getElementById('petStage');
   spawnEffect('food', stage, stage.offsetWidth / 2, stage.offsetHeight / 2);
@@ -393,11 +389,11 @@ function petPet() {
   savePetData();
 
   // Happy bounce effect
-  if (petImage) {
-    petImage.classList.remove('bounce', 'sad-shake', 'eating');
-    petImage.classList.add('happy-bounce');
+  if (petBody) {
+    petBody.classList.remove('sad', 'eating');
+    petBody.classList.add('happy');
     setTimeout(() => {
-      petImage.classList.remove('happy-bounce');
+      petBody.classList.remove('happy');
       updatePetAnimClass();
     }, 1200);
   }
@@ -427,7 +423,7 @@ function adoptPet() {
 
   showCorrectPetScreen();
   updatePetUI();
-  updatePetImage();
+  updatePetAppearance();
 }
 
 btnAdopt.addEventListener('click', adoptPet);
@@ -474,61 +470,46 @@ function updatePetUI() {
   btnFeed.disabled = petData.food <= 0 || petData.hunger >= 100;
 
   // Update image animation
-  updatePetImage();
+  updatePetAppearance();
 }
 
-// ───── Pet image rendering (Twemoji SVG) ─────
-function updatePetImage() {
-  if (!petImage) return;
+// ───── Pet CSS class rendering ─────
+function updatePetAppearance() {
+  if (!petBody) return;
 
-  // Remove all animation classes
-  petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake', 'eating', 'dead-pet');
+  // Remove all old type classes
+  petBody.classList.remove('pet-cat', 'pet-dog', 'pet-rabbit', 'pet-bear', 'pet-fox');
+  petBody.classList.remove('happy', 'sad', 'eating', 'dead');
 
-  if (!petData.adopted) {
-    petImage.src = '';
+  if (!petData.adopted || !petData.alive) {
+    if (!petData.alive && petData.adopted) {
+      petBody.classList.add('dead');
+    }
     return;
   }
 
-  if (!petData.alive) {
-    // Dead — use skull emoji SVG
-    petImage.src = getPetSvgUrl('1f480');
-    petImage.classList.add('dead-pet');
-    return;
-  }
-
-  // Alive — use pet's emoji
+  // Set pet type class (for colors)
   const info = getPetInfo(petData.petType);
-  petImage.src = getPetSvgUrl(info.code);
+  petBody.classList.add(info.cssClass);
 
-  // Animation based on mood
+  // Mood animation
   if (petData.hunger < 20) {
-    petImage.classList.add('sad-shake');
+    petBody.classList.add('sad');
   } else if (petData.happiness >= 80) {
-    petImage.classList.add('happy-bounce');
-  } else {
-    petImage.classList.add('bounce');
+    petBody.classList.add('happy');
   }
-
-  // Special animation
-  if (petSpecialAnim === 'eat') {
-    petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake');
-    petImage.classList.add('eating');
-  }
+  // else idle (default animation on .pet-body)
 }
 
 function updatePetAnimClass() {
-  if (!petData.alive || !petImage) return;
-  petImage.classList.remove('bounce', 'happy-bounce', 'sad-shake', 'eating', 'dead-pet');
-  if (petData.hunger < 20) petImage.classList.add('sad-shake');
-  else if (petData.happiness >= 80) petImage.classList.add('happy-bounce');
-  else petImage.classList.add('bounce');
+  if (!petData.alive || !petBody) return;
+  petBody.classList.remove('happy', 'sad', 'eating');
+  if (petData.hunger < 20) petBody.classList.add('sad');
+  else if (petData.happiness >= 80) petBody.classList.add('happy');
 }
 
-// Idle animation loop
+// Idle loop
 function animatePet() {
-  if (petPanel.style.display !== 'none') {
-    // Image animations are CSS-driven, no per-frame update needed
-  }
   requestAnimationFrame(animatePet);
 }
 

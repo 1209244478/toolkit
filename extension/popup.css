@@ -254,55 +254,229 @@ body {
   min-height: 240px;
 }
 
-.pet-img {
-  display: block;
-  width: 120px;
-  height: 120px;
-  transition: transform 0.3s ease, filter 0.3s ease;
+/* ══════ CSS Kawaii Pet ══════ */
+.pet-body {
+  position: relative;
+  width: 130px;
+  height: 160px;
+  animation: petIdle 2s ease-in-out infinite;
 }
-
-.pet-img.bounce {
-  animation: petBounce 0.6s ease-in-out infinite;
-}
-.pet-img.happy-bounce {
-  animation: petHappyBounce 0.4s ease-in-out infinite;
-}
-.pet-img.sad-shake {
-  animation: petSadShake 1.5s ease-in-out infinite;
-  filter: grayscale(0.4) brightness(0.8);
-}
-.pet-img.eating {
-  animation: petEatNod 0.3s ease-in-out 3;
-}
-.pet-img.dead-pet {
-  filter: grayscale(1) brightness(0.6);
+.pet-body.dead {
+  animation: none;
+  filter: grayscale(1) opacity(0.5);
   transform: rotate(90deg);
-  opacity: 0.7;
 }
 
-@keyframes petBounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-6px) scale(1.03); }
+@keyframes petIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
-@keyframes petHappyBounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  25% { transform: translateY(-12px) scale(1.08); }
-  50% { transform: translateY(0) scale(1); }
-  75% { transform: translateY(-6px) scale(1.04); }
+.pet-body.happy {
+  animation: petHappy 0.5s ease-in-out infinite;
 }
-@keyframes petSadShake {
-  0%, 100% { transform: translateX(0); }
-  10% { transform: translateX(-3px); }
-  20% { transform: translateX(3px); }
-  30% { transform: translateX(-3px); }
-  40% { transform: translateX(3px); }
-  50% { transform: translateX(-2px); }
-  60% { transform: translateX(2px); }
-  70% { transform: translateX(0); }
-}
-@keyframes petEatNod {
+@keyframes petHappy {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(3px) scale(0.95); }
+  30% { transform: translateY(-16px) scale(1.06); }
+  60% { transform: translateY(-4px) scale(1.02); }
+}
+.pet-body.sad {
+  animation: petSad 1.2s ease-in-out infinite;
+}
+@keyframes petSad {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  15% { transform: translateX(-4px) translateY(2px); }
+  30% { transform: translateX(4px) translateY(0); }
+  45% { transform: translateX(-3px) translateY(2px); }
+  60% { transform: translateX(3px) translateY(0); }
+  75% { transform: translateX(-1px) translateY(1px); }
+  90% { transform: translateX(0); }
+}
+.pet-body.eating {
+  animation: petEat 0.35s ease-in-out 4;
+}
+@keyframes petEat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(5px) scale(0.94); }
+}
+
+/* Pet head */
+.pet-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 90px;
+  background: var(--pet-color);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* Ears */
+.pet-ear {
+  position: absolute;
+  width: 32px;
+  height: 38px;
+  background: var(--pet-color);
+  border-radius: 50% 50% 20% 20%;
+  top: -8px;
+}
+.pet-ear::after {
+  content: '';
+  position: absolute;
+  inset: 6px 6px 10px 6px;
+  background: var(--pet-ear-inner);
+  border-radius: 50% 50% 20% 20%;
+}
+.pet-ear-left { left: 6px; transform: rotate(-15deg); }
+.pet-ear-right { right: 6px; transform: rotate(15deg); }
+
+/* Face */
+.pet-face {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 60px;
+}
+
+/* Eyes */
+.pet-eye {
+  position: absolute;
+  top: 8px;
+  width: 16px;
+  height: 18px;
+  background: #1a1a2e;
+  border-radius: 50%;
+}
+.pet-eye::after {
+  content: '';
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+}
+.pet-eye-left { left: 16px; }
+.pet-eye-right { right: 16px; }
+
+.pet-pupil {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #1a1a2e;
+  border-radius: 50%;
+  top: 4px;
+  left: 3px;
+}
+.pet-body.sad .pet-eye {
+  height: 14px;
+  top: 10px;
+}
+.pet-body.sad .pet-pupil {
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+}
+
+/* Nose */
+.pet-nose {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 8px;
+  background: var(--pet-nose);
+  border-radius: 50%;
+}
+/* Mouth */
+.pet-mouth {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 10px;
+  border-bottom: 2.5px solid #1a1a2e;
+  border-radius: 0 0 50% 50%;
+}
+.pet-body.sad .pet-mouth {
+  border-bottom: none;
+  border-top: 2.5px solid #1a1a2e;
+  border-radius: 50% 50% 0 0;
+  top: 30px;
+}
+
+/* Blush */
+.pet-blush {
+  position: absolute;
+  top: 22px;
+  width: 14px;
+  height: 8px;
+  background: rgba(255, 140, 150, 0.4);
+  border-radius: 50%;
+}
+.pet-blush-left { left: 6px; }
+.pet-blush-right { right: 6px; }
+
+/* Body/Torso */
+.pet-torso {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 65px;
+  background: var(--pet-color);
+  border-radius: 35% 35% 45% 45%;
+  z-index: 1;
+}
+.pet-belly {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 32px;
+  background: var(--pet-belly);
+  border-radius: 50%;
+}
+
+/* ───── Pet color themes ───── */
+.pet-cat {
+  --pet-color: #f5a623;
+  --pet-ear-inner: #fcd5a5;
+  --pet-nose: #f08a8a;
+  --pet-belly: #fff8e7;
+}
+.pet-dog {
+  --pet-color: #c8843a;
+  --pet-ear-inner: #e8c8a0;
+  --pet-nose: #5a3a1a;
+  --pet-belly: #f5ebe0;
+}
+.pet-rabbit {
+  --pet-color: #f0e6dc;
+  --pet-ear-inner: #f8c8d8;
+  --pet-nose: #f08a8a;
+  --pet-belly: #ffffff;
+}
+.pet-bear {
+  --pet-color: #8b5e3c;
+  --pet-ear-inner: #c8a882;
+  --pet-nose: #5a3a1a;
+  --pet-belly: #e8d5c0;
+}
+.pet-fox {
+  --pet-color: #e8751a;
+  --pet-ear-inner: #fcd5a5;
+  --pet-nose: #3a2010;
+  --pet-belly: #fff8ee;
 }
 
 /* Floating hearts */
