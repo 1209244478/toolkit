@@ -7,6 +7,17 @@ const STATE_PAUSED = 'paused';
 
 const ALARM_NAME = 'pomodoro-tick';
 
+// ───── Helper: broadcast to all tabs ─────
+function broadcastToTabs(msg) {
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id && tab.url && tab.url.startsWith('http')) {
+        chrome.tabs.sendMessage(tab.id, msg).catch(() => {});
+      }
+    });
+  });
+}
+
 // ───── Notification ─────
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'notify') {
@@ -20,20 +31,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'sync') {
-    chrome.storage.local.set({
-      timerState: msg.timerState,
-      secondsLeft: msg.secondsLeft,
-      endTime: Date.now() + msg.secondsLeft * 1000,
-      workMin: msg.workMin,
-      breakMin: msg.breakMin,
-      sessions: msg.sessions,
-    });
+    const prevState = { timerState: null };
 
-    if (msg.timerState === STATE_WORK || msg.timerState === STATE_BREAK) {
-      chrome.alarms.create(ALARM_NAME, { periodInMinutes: 1 / 60 }); // every 1 second
-    } else {
-      chrome.alarms.clear(ALARM_NAME);
-    }
+    chrome.storage.local.get(['timerState'], (prev) => {
+      prevState.timerState = prev.timerState;
+
+      chrome.storage.local.set({
+        timerState: msg.timerState,
+        secondsLeft: msg.secondsLeft,
+        endTime: Date.now() + msg.secondsLeft * 1000,
+        workMin: msg.workMin,
+        breakMin: msg.breakMin,
+        sessions: msg.sessions,
+      });
+
+      // Detect phase transition → broadcast to content scripts
+      if (msg.timerState === STATE_BREAK && prevState.timerState !== STATE_BREAK) {
+        broadcastToTabs({ type: 'breakStart', secondsLeft: msg.secondsLeft });
+      }
+      if (msg.timerState !== STATE_BREAK && prevState.timerState === STATE_BREAK) {
+        broadcastToTabs({ type: 'breakEnd' });
+      }
+
+      if (msg.timerState === STATE_WORK || msg.timerState === STATE_BREAK) {
+        chrome.alarms.create(ALARM_NAME, { periodInMinutes: 1 / 60 });
+      } else {
+        chrome.alarms.clear(ALARM_NAME);
+      }
+    });
   }
 
   if (msg.type === 'badge') {
@@ -79,6 +104,9 @@ chrome.alarms.onAlarm.addListener((alarm) => {
           message: '工作完成！休息一下吧 ☕',
           priority: 2,
         });
+
+        // Show cat overlay on all tabs
+        broadcastToTabs({ type: 'breakStart', secondsLeft });
       } else {
         state = STATE_WORK;
         secondsLeft = (data.workMin || 25) * 60;
@@ -90,6 +118,9 @@ chrome.alarms.onAlarm.addListener((alarm) => {
           message: '休息结束！开始新的工作周期 🔥',
           priority: 2,
         });
+
+        // Remove cat overlay from all tabs
+        broadcastToTabs({ type: 'breakEnd' });
       }
 
       const newEndTime = now + secondsLeft * 1000;
@@ -101,13 +132,18 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       });
     }
 
+    // Tick the overlay timer during break
+    if (state === STATE_BREAK) {
+      broadcastToTabs({ type: 'breakTick', secondsLeft });
+    }
+
     // Notify popup if open
     try {
       chrome.runtime.sendMessage({
         type: 'tick',
         secondsLeft,
         endTime: data.endTime,
-      }).catch(() => {}); // popup not open, ignore
+      }).catch(() => {});
     } catch(e) {}
   });
 });
