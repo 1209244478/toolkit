@@ -226,189 +226,109 @@ btnReset.addEventListener('click', resetTimer);
 // ════════════════════════════════════════
 //  VIRTUAL PET SYSTEM
 // ════════════════════════════════════════
+
+const AVAILABLE_PETS = ['cat', 'dog', 'rabbit', 'bear', 'fox'];
+
 const PET_TYPES = {
-  cat:    { name: '猫咪', emoji: '🐱', unlockAt: 0 },
-  dog:    { name: '狗狗', emoji: '🐶', unlockAt: 10 },
-  rabbit: { name: '兔子', emoji: '🐰', unlockAt: 20 },
-  bear:   { name: '小熊', emoji: '🐻', unlockAt: 30 },
-  fox:    { name: '狐狸', emoji: '🦊', unlockAt: 50 },
+  cat:    { name: '猫咪', emoji: '🐱', foodName: '鱼罐头', foodEmoji: '🐟', foodIcon: '🐟' },
+  dog:    { name: '狗狗', emoji: '🐶', foodName: '骨头', foodEmoji: '🦴', foodIcon: '🦴' },
+  rabbit: { name: '兔子', emoji: '🐰', foodName: '胡萝卜', foodEmoji: '🥕', foodIcon: '🥕' },
+  bear:   { name: '小熊', emoji: '🐻', foodName: '蜂蜜罐', foodEmoji: '🍯', foodIcon: '🍯' },
+  fox:    { name: '狐狸', emoji: '🦊', foodName: '烤肉', foodEmoji: '🥩', foodIcon: '🥩' },
 };
 
+// Pet name pools
+const PET_NAMES = {
+  cat: ['小咪', '团团', '咪咪', '奶糖', '鱼丸'],
+  dog: ['小汪', '旺财', '豆豆', '馒头', '肉松'],
+  rabbit: ['小跳', '雪球', '棉花', '奶糖', '团子'],
+  bear: ['小憨', '胖达', '滚滚', '蜜蜜', '吨吨'],
+  fox: ['小灵', '火火', '苏苏', '尾尾', '橙子'],
+};
+
+// Dead frame (all pets share the same dead sprite — cross eyes, X mouth)
+const PET_DEAD_FRAME = [
+  '................',
+  '................',
+  '................',
+  '......XXXX......',
+  '.....X....X.....',
+  '....X..XX..X....',
+  '...X........X...',
+  '...XXXXXXXXXX...',
+  '....XXXXXXXX....',
+  '.....X..X.......',
+  '......XX........',
+  '.....X..X.......',
+  '....X....X......',
+  '...X......X.....',
+  '................',
+  '................',
+];
+
 const PET_SPRITES = {
-  // Cat — 16x16 pixel art, 3 frames (idle, walk1, walk2)
   cat: {
-    name: '小咪',
     frames: [
-      // idle
-      [
-        '................',
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '....@@..@@......',
-        '....@....@......',
-        '...@......@.....',
-        '...@..@@..@.....',
-        '................',
-        '................',
-      ],
-      // walk 1
-      [
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '....@@..@@......',
-        '...@......@.....',
-        '...@......@.....',
-        '....@....@......',
-        '.....@..@.......',
-        '................',
-        '................',
-      ],
-      // walk 2
-      [
-        '................',
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '....@@..@@......',
-        '...@......@.....',
-        '..@........@....',
-        '..@..@@..@@.....',
-        '................',
-        '................',
-      ],
-      // happy
-      [
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '....@@..@@......',
-        '....@....@......',
-        '...@......@.....',
-        '...@..@@..@.....',
-        '.......@@.......',
-        '......@..@......',
-        '.....@....@.....',
-      ],
-      // sad
-      [
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '......@@........',
-        '.....@..@.......',
-        '....@....@......',
-        '...@......@.....',
-        '...@..@@..@.....',
-        '................',
-        '................',
-      ],
-      // eat
-      [
-        '................',
-        '......@@........',
-        '.....@@@@.......',
-        '....@@..@@......',
-        '...@@....@@.....',
-        '...@@.@@.@@.....',
-        '...@@@@@@@@.....',
-        '....@@@@@@......',
-        '.....@..@.......',
-        '....@@..@@......',
-        '...@......@.....',
-        '...@..🥫..@.....',
-        '....@....@......',
-        '.....@..@.......',
-        '................',
-        '................',
-      ],
+      ['................','................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','....@....@......','...@......@.....','...@..@@..@.....','................','................'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@......@.....','....@....@......','.....@..@.......','................','................'],
+      ['................','................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','..@........@....','..@..@@..@@.....','................','................'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','....@....@......','...@......@.....','...@..@@..@.....','.......@@.......','......@..@......','.....@....@.....'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','......@@........','.....@..@.......','....@....@......','...@......@.....','...@..@@..@.....','................','................'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@.@@.@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@..##..@.....','....@....@......','.....@..@.......','................','................'],
     ],
   },
-  // Dog — placeholder sprites (same structure, different look)
   dog: {
-    name: '小汪',
     frames: [
       ['................','................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@@....@@.....','....@@@@@@......','......@@........','................'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@......@.....','....@....@......','.....@..@.......','................','................'],
       ['................','................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','..@........@....','..@..@@..@@.....','................','................'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','....@....@......','...@......@.....','...@@....@@.....','....@@@@@@......','......@@........','.......@@.......'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','......@@........','.....@..@.......','....@....@......','...@@....@@.....','....@@@@@@......','......@@........','................'],
-      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@..🥫..@.....','...@@....@@.....','....@@@@@@......','......@@........','................'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@......@.....','...@..##..@.....','...@@....@@.....','....@@@@@@......','......@@........','................'],
     ],
   },
   rabbit: {
-    name: '小跳',
     frames: [
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','..@@@....@@@....','.@@@@@..@@@@@...','..@@@....@@@....','................','................','................'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','...@@@..@@@.....','..@@@@@@@@@@....','...@@@..@@@.....','................','................','................'],
       ['................','................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','..@@@....@@@....','.@@........@@...','................','................','................'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','..@@@....@@@....','.@@@@@..@@@@@...','..@@@....@@@....','................','.......@@.......','......@..@......'],
       ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','......@@........','.....@..@.......','..@@@....@@@....','.@@........@@...','................','................','................'],
-      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','..@@@....@@@....','.@@@@@..@@@@@...','..@@@..🥫.@@@...','................','................','................'],
+      ['................','......@@........','.....@@@@.......','....@@..@@......','...@@....@@.....','...@@....@@.....','...@@@@@@@@.....','....@@@@@@......','.....@..@.......','....@@..@@......','..@@@....@@@....','.@@@@@..@@@@@...','..@@@..##.@@@...','................','................','................'],
     ],
   },
   bear: {
-    name: '小憨',
     frames: [
       ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','.....@@..@@.....','....@......@....','...@........@...','..@..........@..','................','................'],
       ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','....@@....@@....','...@........@...','...@........@...','....@......@....','................','................'],
       ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','......@@@@......','....@......@....','...@........@...','..@..........@..','................','................'],
       ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','.....@@..@@.....','....@......@....','...@..@@@@..@...','..@..@....@..@..','......@@@@......','.......@@.......'],
       ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','......@@........','.......@........','...@........@...','..@..........@..','................','................'],
-      ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','.....@@..@@.....','....@......@....','...@..🥫..@....','..@..........@..','................','................'],
+      ['................','.....@@@@@@.....','....@@@@@@@@....','...@@..@@..@@...','...@@......@@...','...@@.@@@@.@@...','...@@@@@@@@@@...','....@@@@@@@@....','.....@@..@@.....','.....@@..@@.....','.....@@..@@.....','....@......@....','...@..##..@....','..@..........@..','................','................'],
     ],
   },
   fox: {
-    name: '小灵',
     frames: [
       ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@.....@@....','..@@.......@@...','................','................'],
       ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@.....@@....','..@@.......@@...','..@@.........@@.','................','................'],
       ['................','................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@.....@@....','..@@.......@@...','................','................'],
       ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@..@@..@@...','..@@..@..@..@@..','......@@@.......','.......@........'],
       ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','......@@@@......','.....@@..@@.....','....@@....@@....','...@@......@@...','..@@........@@..','................','................'],
-      ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@..🥫.@@....','..@@.......@@...','................','................'],
+      ['................','......@@@.......','.....@@@@@......','....@@@.@@@.....','...@@.....@@....','...@@.@@@.@@....','...@@@@@@@@@....','....@@@@@@@.....','.....@@.@@......','.....@@.@@......','.....@@.@@......','....@@...@@.....','...@@..##.@@....','..@@.......@@...','................','................'],
     ],
   },
 };
 
 const PET_SPRITE_SIZE = 16;
-const PET_PIXEL = 10; // screen pixels per sprite pixel
+const PET_PIXEL = 10;
 const PET_ANIM_FRAME_MS = 400;
 
 // Pet state
 let petData = {
-  petType: 'cat',
+  adopted: false,     // has adopted a pet
+  alive: false,       // is pet alive
+  petType: null,      // 'cat' | 'dog' | 'rabbit' | 'bear' | 'fox'
+  petName: '',        // random name
   hunger: 100,
   happiness: 80,
   food: 3,
@@ -419,21 +339,37 @@ let petData = {
 let petAnimFrame = 0;
 let petAnimTimer = 0;
 let petLastTime = performance.now();
-let petSpecialAnim = null; // 'happy' | 'sad' | 'eat' | null
+let petSpecialAnim = null;
 let petSpecialTimer = 0;
-let floatingEffects = [];
+
+// ───── DOM refs for pet panel ─────
+const petAdopt = document.getElementById('petAdopt');
+const petDead = document.getElementById('petDead');
+const petAlive = document.getElementById('petAlive');
+const petDeadName = document.getElementById('petDeadName');
+const petTypeBadge = document.getElementById('petTypeBadge');
+const btnAdopt = document.getElementById('btnAdopt');
+const hungerIcon = document.getElementById('hungerIcon');
+const foodIcon = document.getElementById('foodIcon');
+const foodLabel = document.getElementById('foodLabel');
 
 // ───── Pet helpers ─────
 function getPetFrames(type) {
   return PET_SPRITES[type] ? PET_SPRITES[type].frames : PET_SPRITES.cat.frames;
 }
 
-function getUnlockPomodoros(type) {
-  return PET_TYPES[type] ? PET_TYPES[type].unlockAt : 999;
+function getPetInfo(type) {
+  return PET_TYPES[type] || PET_TYPES.cat;
 }
 
-function isPetUnlocked(type) {
-  return petData.totalPomodoros >= getUnlockPomodoros(type);
+function getFoodEmoji() {
+  if (!petData.petType) return '🥫';
+  return getPetInfo(petData.petType).foodEmoji;
+}
+
+function getFoodName() {
+  if (!petData.petType) return '食物';
+  return getPetInfo(petData.petType).foodName;
 }
 
 // ───── Pet storage ─────
@@ -442,6 +378,7 @@ function loadPetData() {
     if (data.petData) {
       petData = { ...petData, ...data.petData };
     }
+    showCorrectPetScreen();
     updatePetUI();
     renderPet();
   });
@@ -451,16 +388,53 @@ function savePetData() {
   chrome.storage.local.set({ petData });
 }
 
-// ───── Decay hunger over time ─────
+// ───── Show correct screen ─────
+function showCorrectPetScreen() {
+  petAdopt.style.display = 'none';
+  petDead.style.display = 'none';
+  petAlive.style.display = 'none';
+
+  if (!petData.adopted) {
+    petAdopt.style.display = '';
+  } else if (!petData.alive) {
+    petDead.style.display = '';
+    if (petData.petType) {
+      const info = getPetInfo(petData.petType);
+      petDeadName.textContent = petData.petName + ' 饿死了';
+    }
+  } else {
+    petAlive.style.display = '';
+    petTypeBadge.textContent = getPetInfo(petData.petType).emoji;
+    petNameEl.textContent = petData.petName;
+    hungerIcon.textContent = getFoodEmoji();
+    foodIcon.textContent = getFoodEmoji();
+    foodLabel.textContent = getFoodName();
+  }
+}
+
+// ───── Decay hunger / check death ─────
 function petTick() {
+  if (!petData.alive) return;
   const now = Date.now();
   const elapsedMin = (now - petData.lastTickTime) / 60000;
   if (elapsedMin >= 1) {
-    petData.hunger = Math.max(0, petData.hunger - Math.floor(elapsedMin * 2));
+    const decayMin = Math.floor(elapsedMin);
+    petData.hunger = Math.max(0, petData.hunger - decayMin * 2);
     if (petData.hunger < 30) {
-      petData.happiness = Math.max(0, petData.happiness - Math.floor(elapsedMin));
+      petData.happiness = Math.max(0, petData.happiness - decayMin);
     }
     petData.lastTickTime = now;
+
+    // Check death
+    if (petData.hunger <= 0) {
+      petData.alive = false;
+      petData.happiness = 0;
+      savePetData();
+      showCorrectPetScreen();
+      updatePetUI();
+      renderPet();
+      return;
+    }
     savePetData();
   }
   if (petPanel.style.display !== 'none') updatePetUI();
@@ -468,91 +442,92 @@ function petTick() {
 
 // ───── Actions ─────
 function awardFood(amount) {
+  if (!petData.alive) return;
   petData.food += amount;
   petData.totalPomodoros += amount;
   savePetData();
-  updatePetSelector();
 }
 
 function feedPet() {
-  if (petData.food <= 0) return;
+  if (!petData.alive || petData.food <= 0 || petData.hunger >= 100) return;
   petData.food--;
   petData.hunger = Math.min(100, petData.hunger + 30);
   petData.happiness = Math.min(100, petData.happiness + 10);
   savePetData();
 
-  // Show eating animation + floating food effect
   triggerSpecialAnim('eat');
-  spawnEffect('food', petCanvas.parentElement, petCanvas.parentElement.offsetWidth / 2, petCanvas.parentElement.offsetHeight / 2);
+  const stage = document.getElementById('petStage');
+  spawnEffect('food', stage, stage.offsetWidth / 2, stage.offsetHeight / 2);
   updatePetUI();
 }
 
 function petPet() {
+  if (!petData.alive) return;
   petData.happiness = Math.min(100, petData.happiness + 5);
   savePetData();
 
   triggerSpecialAnim('happy');
-  spawnEffect('heart', petCanvas.parentElement, Math.random() * petCanvas.parentElement.offsetWidth * 0.6 + petCanvas.parentElement.offsetWidth * 0.2, petCanvas.parentElement.offsetHeight * 0.5);
+  const stage = document.getElementById('petStage');
+  spawnEffect('heart', stage, Math.random() * stage.offsetWidth * 0.6 + stage.offsetWidth * 0.2, stage.offsetHeight * 0.5);
   updatePetUI();
 }
 
+// ───── Adopt a random pet ─────
+function adoptPet() {
+  if (petData.adopted) return;
+
+  const idx = Math.floor(Math.random() * AVAILABLE_PETS.length);
+  const type = AVAILABLE_PETS[idx];
+  const names = PET_NAMES[type] || ['小宠'];
+  const name = names[Math.floor(Math.random() * names.length)];
+
+  petData.adopted = true;
+  petData.alive = true;
+  petData.petType = type;
+  petData.petName = name;
+  petData.hunger = 100;
+  petData.happiness = 80;
+  petData.food = 3;
+  petData.lastTickTime = Date.now();
+  savePetData();
+
+  showCorrectPetScreen();
+  updatePetUI();
+  renderPet();
+}
+
+btnAdopt.addEventListener('click', adoptPet);
+
 function triggerSpecialAnim(type) {
   petSpecialAnim = type;
-  petSpecialTimer = 1200; // ms
+  petSpecialTimer = 1200;
 }
 
 function spawnEffect(type, parent, x, y) {
+  if (!parent) return;
   const el = document.createElement('div');
   el.className = type === 'heart' ? 'heart-float' : 'food-float';
-  el.textContent = type === 'heart' ? ['❤️', '💕', '💖', '✨'][Math.floor(Math.random() * 4)] : '🥫';
+  if (type === 'heart') {
+    el.textContent = ['❤️', '💕', '💖', '✨'][Math.floor(Math.random() * 4)];
+  } else {
+    el.textContent = getFoodEmoji();
+  }
   el.style.left = x + 'px';
   el.style.top = y + 'px';
   parent.appendChild(el);
   setTimeout(() => el.remove(), 800);
 }
 
-// ───── Pet selection ─────
-function selectPet(type) {
-  if (!isPetUnlocked(type)) return;
-  petData.petType = type;
-  petNameEl.textContent = PET_SPRITES[type] ? PET_SPRITES[type].name : PET_TYPES[type].name;
-  savePetData();
-  updatePetSelector();
-  renderPet();
-}
-
-petSelector.addEventListener('click', (e) => {
-  const btn = e.target.closest('.pet-option');
-  if (!btn || btn.classList.contains('locked')) return;
-  selectPet(btn.dataset.pet);
-});
-
-function updatePetSelector() {
-  petSelector.querySelectorAll('.pet-option').forEach(btn => {
-    const type = btn.dataset.pet;
-    if (PET_TYPES[type]) {
-      btn.textContent = PET_TYPES[type].emoji;
-      btn.title = PET_TYPES[type].name;
-    }
-    if (isPetUnlocked(type)) {
-      btn.classList.remove('locked');
-      if (type === petData.petType) btn.classList.add('active');
-      else btn.classList.remove('active');
-    } else {
-      btn.classList.add('locked');
-      btn.classList.remove('active');
-      btn.textContent = '🔒';
-      btn.title = PET_TYPES[type].name + ' (解锁: ' + getUnlockPomodoros(type) + ' 个番茄)';
-    }
-  });
-}
-
 // ───── Pet UI update ─────
 function updatePetUI() {
+  if (!petData.alive) return;
+
   // Hunger bar
   const h = petData.hunger;
   hungerBar.style.width = h + '%';
-  if (h < 20) { hungerBar.classList.add('low'); hungerText.textContent = '饿坏了'; }
+  const barLow = h < 20;
+  if (h < 10) { hungerBar.classList.add('low'); hungerText.textContent = '濒临饿死'; }
+  else if (h < 20) { hungerBar.classList.add('low'); hungerText.textContent = '饿坏了'; }
   else if (h < 50) { hungerBar.classList.remove('low'); hungerText.textContent = '有点饿'; }
   else if (h < 80) { hungerBar.classList.remove('low'); hungerText.textContent = '还行'; }
   else { hungerBar.classList.remove('low'); hungerText.textContent = '饱饱的'; }
@@ -568,13 +543,17 @@ function updatePetUI() {
   // Food
   foodCount.textContent = petData.food;
   btnFeed.disabled = petData.food <= 0 || petData.hunger >= 100;
-
-  // Selector
-  updatePetSelector();
 }
 
 // ───── Pet Canvas Render ─────
 function renderPetAnimFrame() {
+  // Dead pet
+  if (petData.adopted && !petData.alive) {
+    return PET_DEAD_FRAME;
+  }
+
+  if (!petData.petType || !petData.alive) return null;
+
   const frames = getPetFrames(petData.petType);
   if (petSpecialAnim) {
     const idx = petSpecialAnim === 'happy' ? 3 : petSpecialAnim === 'sad' ? 4 : 5;
@@ -584,23 +563,29 @@ function renderPetAnimFrame() {
 }
 
 function renderPet() {
+  if (petData.adopted && !petData.alive && petPanel.style.display === 'none') return;
+
   const w = petCanvas.width;
   const h = petCanvas.height;
   petCtx.clearRect(0, 0, w, h);
 
+  // Draw ground shadow
   const sprite = renderPetAnimFrame();
+  if (!sprite) return;
+
   const spritePixel = PET_PIXEL;
   const spriteW = PET_SPRITE_SIZE * spritePixel;
   const spriteH = PET_SPRITE_SIZE * spritePixel;
   const ox = (w - spriteW) / 2;
   const oy = (h - spriteH) / 2;
 
-  // Gentle bounce when happy
   let bounceY = 0;
-  if (petData.happiness >= 80) {
+  if (petData.alive && petData.happiness >= 80) {
     bounceY = Math.sin(performance.now() * 0.004) * 4;
   }
 
+  // Draw body pixels
+  const isDead = petData.adopted && !petData.alive;
   for (let row = 0; row < PET_SPRITE_SIZE; row++) {
     for (let col = 0; col < PET_SPRITE_SIZE; col++) {
       const ch = sprite[row] ? sprite[row][col] : '.';
@@ -610,22 +595,16 @@ function renderPet() {
       const y = oy + row * spritePixel + bounceY;
 
       if (ch === '@') {
+        petCtx.fillStyle = isDead ? '#6b6b6b' : '#1a1a2e';
+      } else if (ch === 'X') {
         petCtx.fillStyle = '#1a1a2e';
-      } else if (ch === '🥫') {
+      } else if (ch === '#') {
         petCtx.fillStyle = '#f97316';
-        petCtx.fillRect(x, y, spritePixel, spritePixel);
-        continue;
       } else {
         continue;
       }
 
       petCtx.fillRect(x, y, spritePixel, spritePixel);
-
-      // Add a subtle lighter pixel on top for depth
-      if (row < PET_SPRITE_SIZE - 1 && sprite[row + 1] && sprite[row + 1][col] === '.') {
-        petCtx.fillStyle = '#3a3a5e';
-        petCtx.fillRect(x + 1, y + spritePixel - 2, spritePixel - 2, 2);
-      }
     }
   }
 
@@ -633,28 +612,33 @@ function renderPet() {
   const eyeY = oy + 3 * spritePixel + bounceY;
   const leftEyeX = ox + 5 * spritePixel;
   const rightEyeX = ox + 10 * spritePixel;
-  const eyeSize = spritePixel * 0.6;
 
-  petCtx.fillStyle = '#ffffff';
-  petCtx.fillRect(leftEyeX + 1, eyeY + 1, spritePixel - 2, spritePixel - 1);
-  petCtx.fillRect(rightEyeX + 1, eyeY + 1, spritePixel - 2, spritePixel - 1);
-
-  // Pupils (look around slightly)
-  if (petData.happiness < 20) {
-    // Sad — pupils down
-    petCtx.fillStyle = '#1a1a2e';
-    petCtx.fillRect(leftEyeX + 3, eyeY + spritePixel - 2, eyeSize, eyeSize * 0.5);
-    petCtx.fillRect(rightEyeX + 3, eyeY + spritePixel - 2, eyeSize, eyeSize * 0.5);
+  if (isDead) {
+    // X eyes for dead
+    petCtx.fillStyle = '#6b6b6b';
+    petCtx.font = (spritePixel * 0.9) + 'px monospace';
+    petCtx.fillText('✕', leftEyeX + 1, eyeY + spritePixel);
+    petCtx.fillText('✕', rightEyeX + 1, eyeY + spritePixel - 1);
   } else {
-    petCtx.fillStyle = '#1a1a2e';
-    petCtx.fillRect(leftEyeX + 2, eyeY + 2, eyeSize, eyeSize);
-    petCtx.fillRect(rightEyeX + 2, eyeY + 2, eyeSize, eyeSize);
-  }
+    const eyeSize = spritePixel * 0.6;
+    petCtx.fillStyle = '#ffffff';
+    petCtx.fillRect(leftEyeX + 1, eyeY + 1, spritePixel - 2, spritePixel - 1);
+    petCtx.fillRect(rightEyeX + 1, eyeY + 1, spritePixel - 2, spritePixel - 1);
 
-  // If sad, add tear
-  if (petData.happiness < 20) {
-    petCtx.fillStyle = '#60a5fa';
-    petCtx.fillRect(leftEyeX + spritePixel - 2, eyeY + spritePixel, 2, 3);
+    if (petData.happiness < 20) {
+      petCtx.fillStyle = '#1a1a2e';
+      petCtx.fillRect(leftEyeX + 3, eyeY + spritePixel - 2, eyeSize, eyeSize * 0.5);
+      petCtx.fillRect(rightEyeX + 3, eyeY + spritePixel - 2, eyeSize, eyeSize * 0.5);
+    } else {
+      petCtx.fillStyle = '#1a1a2e';
+      petCtx.fillRect(leftEyeX + 2, eyeY + 2, eyeSize, eyeSize);
+      petCtx.fillRect(rightEyeX + 2, eyeY + 2, eyeSize, eyeSize);
+    }
+
+    if (petData.happiness < 20) {
+      petCtx.fillStyle = '#60a5fa';
+      petCtx.fillRect(leftEyeX + spritePixel - 2, eyeY + spritePixel, 2, 3);
+    }
   }
 }
 
@@ -689,10 +673,8 @@ btnPetPet.addEventListener('click', petPet);
 // ───── Pet init ─────
 loadPetData();
 petTick();
-setInterval(petTick, 30000); // tick every 30 seconds
-updatePetSelector();
+setInterval(petTick, 30000);
 requestAnimationFrame(animatePet);
-petNameEl.textContent = PET_SPRITES[petData.petType] ? PET_SPRITES[petData.petType].name : '小番茄';
 
 // ════════════════════════════════════════
 //  BACKGROUND MESSAGE LISTENER

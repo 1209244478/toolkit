@@ -46,28 +46,44 @@
 
   <!-- Pet Panel -->
   <div class="panel" id="petPanel" style="display:none">
-    <div class="container">
-      <!-- Pet selector -->
-      <div class="pet-selector" id="petSelector">
-        <button class="pet-option active" data-pet="cat" title="猫咪">🐱</button>
-        <button class="pet-option locked" data-pet="dog" title="狗狗 (解锁: 10 个番茄)">🔒</button>
-        <button class="pet-option locked" data-pet="rabbit" title="兔子 (解锁: 20 个番茄)">🔒</button>
-        <button class="pet-option locked" data-pet="bear" title="小熊 (解锁: 30 个番茄)">🔒</button>
-        <button class="pet-option locked" data-pet="fox" title="狐狸 (解锁: 50 个番茄)">🔒</button>
+    <!-- Adopt screen (no pet yet) -->
+    <div class="pet-adopt" id="petAdopt" style="display:none">
+      <div class="pet-adopt-inner">
+        <div class="pet-adopt-icon">🐣</div>
+        <h3>领养一只宠物</h3>
+        <p>完成番茄钟可获得食物来喂养它。<br>记得定时投喂，不然它会饿死的...</p>
+        <button class="btn btn-primary btn-adopt" id="btnAdopt">🎲 随机领养</button>
       </div>
+    </div>
 
-      <!-- Pet canvas -->
-      <div class="pet-stage">
+    <!-- Dead screen -->
+    <div class="pet-dead" id="petDead" style="display:none">
+      <div class="pet-dead-inner">
+        <div class="pet-dead-icon">🪦</div>
+        <h3 id="petDeadName">你的宠物饿死了</h3>
+        <p>你没能及时喂养它...<br>每个生命只有一次机会。</p>
+      </div>
+    </div>
+
+    <!-- Pet alive screen -->
+    <div class="container" id="petAlive">
+      <!-- Pet stage -->
+      <div class="pet-stage" id="petStage">
         <canvas id="petCanvas" width="200" height="200"></canvas>
       </div>
 
-      <!-- Pet name -->
-      <div class="pet-name" id="petName">小番茄</div>
+      <!-- Pet info -->
+      <div class="pet-info">
+        <div class="pet-name-type">
+          <span class="pet-type-badge" id="petTypeBadge">🐱</span>
+          <span class="pet-name" id="petName">小番茄</span>
+        </div>
+      </div>
 
       <!-- Status bars -->
       <div class="status-bars">
         <div class="status-row">
-          <span class="status-icon">🍖</span>
+          <span class="status-icon" id="hungerIcon">🍖</span>
           <div class="status-bar-wrap">
             <div class="status-bar-fill hunger" id="hungerBar" style="width:100%"></div>
           </div>
@@ -84,11 +100,13 @@
 
       <!-- Food & Actions -->
       <div class="pet-actions">
-        <div class="food-count">
-          🥫 食物: <span id="foodCount">0</span>
+        <div class="food-info">
+          <span class="food-icon" id="foodIcon">🥫</span>
+          <span class="food-label" id="foodLabel">食物</span>
+          <span class="food-count">: <strong id="foodCount">0</strong></span>
         </div>
         <div class="btn-group">
-          <button class="btn btn-primary" id="btnFeed" disabled>喂食 (-1 🥫)</button>
+          <button class="btn btn-primary" id="btnFeed" disabled>喂食</button>
           <button class="btn btn-outline" id="btnPetPet">抚摸</button>
         </div>
       </div>
