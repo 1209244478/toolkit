@@ -7,33 +7,94 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <label class="label">工作时长 (<span id="workMinVal">25</span> 分钟)</label>
-        <input type="range" id="workSlider" class="slider" min="1" max="60" value="25">
-      </div>
-      <div class="col">
-        <label class="label">休息时长 (<span id="breakMinVal">5</span> 分钟)</label>
-        <input type="range" id="breakSlider" class="slider" min="1" max="30" value="5">
-      </div>
-    </div>
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabPomodoro">🍅 番茄钟</button>
+    <button class="tab-btn" id="tabPet">🐱 宠物</button>
+  </div>
 
-    <div class="timer-card">
-      <div class="state-label" id="stateLabel">准备开始</div>
-      <div class="time-display" id="timeDisplay">25:00</div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  <!-- Pomodoro Panel -->
+  <div class="panel" id="pomodoroPanel">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <label class="label">工作时长 (<span id="workMinVal">25</span> 分钟)</label>
+          <input type="range" id="workSlider" class="slider" min="1" max="60" value="25">
+        </div>
+        <div class="col">
+          <label class="label">休息时长 (<span id="breakMinVal">5</span> 分钟)</label>
+          <input type="range" id="breakSlider" class="slider" min="1" max="30" value="5">
+        </div>
       </div>
-      <div class="session-count">已完成 <span id="sessionCount">0</span> 个番茄</div>
-    </div>
 
-    <div class="btn-group">
-      <button class="btn btn-primary" id="btnStart">开始</button>
-      <button class="btn btn-outline" id="btnPause" style="display:none">暂停</button>
-      <button class="btn btn-outline" id="btnReset">重置</button>
+      <div class="timer-card">
+        <div class="state-label" id="stateLabel">准备开始</div>
+        <div class="time-display" id="timeDisplay">25:00</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div class="session-count">已完成 <span id="sessionCount">0</span> 个番茄</div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-primary" id="btnStart">开始</button>
+        <button class="btn btn-outline" id="btnPause" style="display:none">暂停</button>
+        <button class="btn btn-outline" id="btnReset">重置</button>
+      </div>
     </div>
   </div>
+
+  <!-- Pet Panel -->
+  <div class="panel" id="petPanel" style="display:none">
+    <div class="container">
+      <!-- Pet selector -->
+      <div class="pet-selector" id="petSelector">
+        <button class="pet-option active" data-pet="cat" title="猫咪">🐱</button>
+        <button class="pet-option locked" data-pet="dog" title="狗狗 (解锁: 10 个番茄)">🔒</button>
+        <button class="pet-option locked" data-pet="rabbit" title="兔子 (解锁: 20 个番茄)">🔒</button>
+        <button class="pet-option locked" data-pet="bear" title="小熊 (解锁: 30 个番茄)">🔒</button>
+        <button class="pet-option locked" data-pet="fox" title="狐狸 (解锁: 50 个番茄)">🔒</button>
+      </div>
+
+      <!-- Pet canvas -->
+      <div class="pet-stage">
+        <canvas id="petCanvas" width="200" height="200"></canvas>
+      </div>
+
+      <!-- Pet name -->
+      <div class="pet-name" id="petName">小番茄</div>
+
+      <!-- Status bars -->
+      <div class="status-bars">
+        <div class="status-row">
+          <span class="status-icon">🍖</span>
+          <div class="status-bar-wrap">
+            <div class="status-bar-fill hunger" id="hungerBar" style="width:100%"></div>
+          </div>
+          <span class="status-text" id="hungerText">饱饱的</span>
+        </div>
+        <div class="status-row">
+          <span class="status-icon">❤️</span>
+          <div class="status-bar-wrap">
+            <div class="status-bar-fill happy" id="happyBar" style="width:80%"></div>
+          </div>
+          <span class="status-text" id="happyText">开心</span>
+        </div>
+      </div>
+
+      <!-- Food & Actions -->
+      <div class="pet-actions">
+        <div class="food-count">
+          🥫 食物: <span id="foodCount">0</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btnFeed" disabled>喂食 (-1 🥫)</button>
+          <button class="btn btn-outline" id="btnPetPet">抚摸</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>
